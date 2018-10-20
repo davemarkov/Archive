@@ -3,31 +3,43 @@
 
 void BitsContainer::createSpace()
 {
-	allBits = new char[capacity];
-	for (int i = 0; i < capacity; ++i)
-		allBits[i] = 0;
+	block1 = new char[capacity];
+	block2 = new char[capacity];
+}
+
+void BitsContainer::swapBlocks()
+{
+	char* temp = block1;
+	block1 = block2;
+	block2 = temp;
 }
 
 void BitsContainer::resize()
 {
 	char* temp = new char[capacity *= 2];
 	for (int i = 0; i < size; ++i)
-		temp[i] = allBits[i];
-	delete[] allBits;
-	allBits = temp;
+		temp[i] = block1[i];
+	delete[] block1;
+	block1 = temp;
 }
 
 //
 void BitsContainer::moveBit()
 {
-	if (integerSize == 8)
+	if (bitPos == 8)
 	{
 		size += 1;
-		integerSize = 0;
+		bitPos = 0;
 	}
-	if (isFull()) resize();
-	allBits[size] <<= 1;
-	integerSize += 1;
+	if (isFull()) 
+	{
+		swapBlocks();
+		size = 0;
+		writeReady = true;
+	}
+
+	block1[size] <<= 1;
+	bitPos += 1;
 }
 
 void BitsContainer::addCustom(int number, int len)
@@ -114,7 +126,7 @@ void BitsContainer::addNumber(short number)
 void BitsContainer::addOne()
 {
 	moveBit();
-	allBits[size] ^= 1;
+	block1[size] ^= 1;
 }
 
 void BitsContainer::addZero()
@@ -124,7 +136,9 @@ void BitsContainer::addZero()
 
 void BitsContainer::setEnd()
 {
-	allBits[size] <<= (8 - integerSize);
+	block1[size] <<= (8 - bitPos);
+	swapBlocks();
+	writeReady = true;
 }
 
 void BitsContainer::print(int idx)
@@ -132,7 +146,7 @@ void BitsContainer::print(int idx)
 	short mask = 1 << 7;
 	for (int i = 0; i < 8; ++i)
 	{
-		if (!(allBits[idx] & mask))
+		if (!(block1[idx] & mask))
 			std::cout << 0;
 		else
 			std::cout << 1;
@@ -147,7 +161,13 @@ void BitsContainer::printAll()
 		print(i);
 }
 
+void BitsContainer::reset()
+{
+
+}
+
 void BitsContainer::clear()
 {
-	delete[] allBits;
+	delete[] block1;
+	delete[] block2;
 }

@@ -1,15 +1,22 @@
 #ifndef BITS_CONTAINER_HEADER
 #define BITS_CONTAINER_HEADER
 
+const int MAX_SIZE = 4096;
+
 class BitsContainer
 {
-	int integerSize;
+	int bitPos;
 	int capacity;
+	int size;
+	char* block1;
+	char* block2;
+	bool writeReady;
 
 public:
-	int size;
-	char* allBits;
-	BitsContainer() : allBits(nullptr), size(0), integerSize(0), capacity(64)
+
+public:
+	BitsContainer() : block1(nullptr), block2(nullptr), size(0),
+	bitPos(0), capacity(MAX_SIZE), writeReady(false)
 	{
 		createSpace();
 	}
@@ -21,12 +28,17 @@ public:
 private:
 	void createSpace();
 	void resize();
+	void clear();
+	void swapBlocks();
 
 public:
 	bool isFull() { return size == capacity; }
+	bool isReady() const { return writeReady;}
+	void setDoneWritting() { writeReady = false; }
 	void moveBit();
 	void addCustom(int number, int bitSize);
 	void addCustom(short bits, int len);
+	//void addCustom(char byte, int len);
 	void addChar(char sign);
 	void addString(char* text);
 	void addNumber(int number);
@@ -37,7 +49,9 @@ public:
 	void print(int idx);
 	void print();
 	void printAll();
-	void clear();
+	char* getBlockToWrite() {return block2;}
+	void reset();
+	int getSize() const { return size; }
 
 };
 

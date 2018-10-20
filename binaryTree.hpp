@@ -151,7 +151,7 @@ void BinaryTree<Type>::findFreeSpot(Node*& current, Type& key)
 
 	if (current->key == key)
 	{
-		++cnt;
+		current->cnt++;
 		return;
 	}
 

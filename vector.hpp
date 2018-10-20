@@ -32,6 +32,7 @@ public:
 	void sort();
 	void insert(T toInsert);
 	void remove(T toRemove);
+	T pop();
 
 };
 
@@ -58,12 +59,12 @@ void Vector<T>::copy()
 }
 
 template<typename T>
-bool Vector<T>::isEmpty()
+bool Vector<T>::isEmpty() const
 {
 	return !size;
 }
 template<typename T>
-bool Vector<T>::isFull()
+bool Vector<T>::isFull() const
 {
 	return size == capacity;
 }
@@ -93,7 +94,14 @@ void Vector<T>::remove(T toRemove)
 }
 
 template<typename T>
-int Vector<T>::binarysearch(T& key) const
+T Vector<T>::pop(){
+	T toPop = arr[size - 1];
+	arr[--size] = NULL;
+	return toPop;
+}
+
+template<typename T>
+int Vector<T>::binarySearch(T& key) const
 {
 	return binarySearch(0, size - 1, key);
 }

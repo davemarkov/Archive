@@ -2,13 +2,10 @@
 #define CREATE_ARCHIVE_HEADER
 
 #include "analysis.h"
-#include "bitsContainer.h"
-#include "dictionary.h"
+#include "writeToBinary.h"
 
 class Archive : public Analysis
 {
-	BitsContainer bitsContainer;
-
 public:
 	Archive(char* fileName) : Analysis(fileName) {}
 

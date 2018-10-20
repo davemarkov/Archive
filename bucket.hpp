@@ -7,9 +7,10 @@ template<typename T>
 class ByteBucket
 {
     Type* storage;
+    Type* first;
 
   public:
-    ByteBucket() : storage(nullptr)
+    ByteBucket() : storage(nullptr), first(nullptr)
     {
         make_storage();
     }
@@ -27,7 +28,7 @@ class ByteBucket
     void copy(const ByteBucket&);
 
   public:
-    const char& get(char) const;
+    const T& get(char) const;
     void insert(const char&, T);
     void remove(const char&);
 };
@@ -63,6 +64,8 @@ void ByteBucket<T>::make_storage()
     storage = new T[SIZE];
     for (int i = 0; i < SIZE; i++)
         storage[i] = nullptr;
+    
+    first = storage;
 }
 
 template<typename T>

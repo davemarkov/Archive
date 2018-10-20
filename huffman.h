@@ -7,6 +7,7 @@
 #include "binaryFileReader.h"
 #include "data.h"
 #include "bucket.hpp"
+#include "vector.hpp"
 
 class Compression 
 {
@@ -17,11 +18,12 @@ protected:
 	Data* root;
 	bool savedEncodedData;
 	ByteBucket<Data*> bucket;
+	Vector<Data*> arr;
 
 public:
 	Compression(): root(nullptr), savedEncodedData(false) {}
 
-	//it fills the encoded data with the first walkthrough
+	//it fills the encoded data ??where?? with the first walkthrough
 	//then it is filled and just returns 
 	class CompressionIterator
 	{

@@ -2,7 +2,7 @@
 #include <fstream>
 #include "createArchive.h"
 #include <string.h>
-#include "vector.hpp"
+//#include "vector.hpp"
 
 void Archive::archiveFile(char* fileName)
 {
@@ -16,42 +16,44 @@ void Archive::archiveFile(char* fileName)
 	// write file with encoded bytes
 	// done 
 
-	std::ofstream out("myTest.darc", std::ios::binary);
-	if (out.is_open())
-	{
+	WriteToBinary out("myTest.darc");
+		// compressed file header
 		int len = strlen(fileName);
-		bitsContainer.addNumber(len);
-		bitsContainer.addString(fileName);
-		bitsContainer.addNumber(dictionaryLength);
+		out.write(len);
+		out.write(fileName);
+		out.write(dictionaryLength);
 
-		// huffmanIterator// intsert in file// intsert in vector(sorted)
-		CompressionIterator iter = begin();
-
-		Dictionary dictionary;
-		while (!iter.endOfIterator())
+		//insert dictionary (for each encoding)
+		while (!arr.isEmpty())
 		{
-			bitsContainer.addChar(iter->elem);
-			bitsContainer.addNumber(iter->codeLength);
-			bitsContainer.addNumber(iter->encoded);
+			Data* current = arr.pop();
+
+			out.write(current->elem);
+			out.write(current->codeLength);
+			out.write(current->encoded,current->codeLength);
 						
-			dictionary.insert(iter.operator->);
-			
+			bucket.insert(current->elem,current);
 		}
 
-		//generate encoded file with vector;
+		//go through each byte and write the corresponding encoded value from bytebucket
 		BinaryFileReader file(fileName);
-
 		while (!file.isEOF())
 		{
-			Data* temp = dictionary.search(file.get());
-			bitsContainer.addCustom(temp->encoded, temp->codeLength);
+			Data* temp = bucket.get(file.get());
+			out.write(temp->encoded, temp->codeLength);
 		}
-		bitsContainer.setEnd();
-
-		out.write(bitsContainer.allBits, (sizeof(char))*bitsContainer.size + 1);
-
-		out.close();
-	}
-	else
-		std::cout << "couldnt create file :( " << std::endl;
+		out.putEOF();
+//
+		//BinaryFileReader file(fileName);
+//
+		//while (!file.isEOF())
+		//{
+		//	Data* temp = dictionary.search(file.get());
+		//	bitsContainer.addCustom(temp->encoded, temp->codeLength);
+		//}
+		//bitsContainer.setEnd();
+//
+		//out.write(bitsContainer.allBits, (sizeof(char))*bitsContainer.size + 1);
+//
+		//out.close();
 }

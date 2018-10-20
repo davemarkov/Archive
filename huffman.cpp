@@ -59,7 +59,8 @@ void Compression::saveEncodedData(Data*& current, short value = 0, int cnt = 0)
 	{
 		current->encoded = value;
 		current->codeLength = cnt;
-		bucket.insert(current->elem, current);
+		//bucket.insert(current->elem, current);
+		arr.insert(current);
 		current = nullptr;
 		return;
 	}
